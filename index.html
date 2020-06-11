@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+
+
+    <title>MY_WORDS</title>
+
+    <style>
+        body {
+            background-color: #FAFAFA;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        .head {
+            height: 200px;
+            background-color: #FAFAFA;
+            color: rgb(133, 123, 123);
+            border: 1px solid rgb(201, 197, 197);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 9999;
+        }
+
+        h1 {
+            font-family: 'Gugi', cursive;
+            line-height: 75px;
+            float: left;
+        }
+
+        .menu {
+            float: right;
+        }
+
+        .menu button {
+            float: left;
+            line-height: 75px;
+            background-color: #FAFAFA;
+            border: none;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+
+        .box_2 {
+            border: solid olive;
+            width: 90%;
+            padding: 30px;
+            margin: 10px;
+            box-sizing: BORDER-box;
+            padding-top: 100px;
+        }
+
+        .input {
+            margin-top: 75px;
+            margin-left: 500px;
+        }
+
+        .input_st {
+            margin: 10px;
+            width: 400px;
+            font-size: large;
+            font-weight: bolder;
+            background-color: #fafafa;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom-color: rgb(201, 197, 197);
+            border-width: 1px;
+
+        }
+
+        .btn {
+            background-color: rgb(201, 197, 197);
+            border-radius: 5px;
+            border-color: rgb(201, 197, 197);
+            font-size: smaller;
+            padding: 5px 10px;
+        }
+
+        .menubar {
+            width: 1170px;
+            margin: 0 auto;
+        }
+
+        .wrapper_2 {
+            margin-top: 250px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-template-rows: 300px 300px 300px 300px;
+            grid-gap: 10px;
+            margin-left: 10px;
+        }
+    </style>
+    <script>
+
+        // $(document).ready(function () {
+        //     $('#cards-box').html('');
+        //     listing();
+        // });
+
+
+
+        function make_word() {
+            let word = $('#input_word').val();
+
+            $.ajax({
+                type: 'POST', 
+                url: '/word', 
+                data: { word_give: word }, 
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg']);
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+
+
+        // function listing() {
+        //     // 1. 리뷰 목록을 서버에 요청하기
+        //     // 2. 요청 성공 여부 확인하기
+        //     // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "/card",
+        //         data: {},
+        //         success: function (response) {
+        //             if (response['result'] == 'success') {
+        //                 alert(response['msg']);
+        //                 // 2. 성공했을 때 리뷰를 올바르게 화면에 나타내기
+        //             } else {
+        //                 alert('리뷰를 받아오지 못했습니다');
+        //             }
+        //         }
+        //     });
+        // }
+    </script>
+</head>
+
+<body>
+    <div class="head">
+        <div class="menubar">
+            <h1>My Word</h1>
+            <div class="menu">
+                <button onclick="prompt('참고한 링크를 입력하세요.')">링크</button></li>
+                <button onclick="prompt('메모 or 참고한 글을 입력하면 되요.')">메모</button></li>
+                <button onclick="alert('단어장이 발행되었습니다 :D')">발행</button></li>
+            </div>
+        </div>
+
+        <div class="input">
+            <p><input id="input_title" class="input_st" type="text" placeholder="타이틀 입력"></p>
+            <p><input id="input_word" class="input_st" type="text" placeholder="영어 단어 입력">
+                <button class="btn" type="button" onclick="make_word()">등록</button></p>
+        </div>
+    </div>
+
+
+    <div id="cards_box" class="wrapper_2">
+
+        <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <span style="font-size:xx-large; font-weight:bold">영어단어</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">단어 뜻 [한글]</h5>
+                <p class="card-text">단어가 사용된 예문 2가지</p>
+            </div>
+        </div>
+
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header">Header</div>
+            <div class="card-body">
+                <h5 class="card-title">Light card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
+            </div>
+        </div>
+
+        <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <span style="font-size:xx-large; font-weight:bold">영어단어</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">단어 뜻 [한글]</h5>
+                <p class="card-text">단어가 사용된 예문 2가지</p>
+            </div>
+        </div>
+
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header">Header</div>
+            <div class="card-body">
+                <h5 class="card-title">Light card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
+            </div>
+        </div>
+
+        <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <span style="font-size:xx-large; font-weight:bold">영어단어</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">단어 뜻 [한글]</h5>
+                <p class="card-text">단어가 사용된 예문 2가지</p>
+            </div>
+        </div>
+
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header">Header</div>
+            <div class="card-body">
+                <h5 class="card-title">Light card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
+            </div>
+        </div>
+
+        <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <span style="font-size:xx-large; font-weight:bold">영어단어</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">단어 뜻 [한글]</h5>
+                <p class="card-text">단어가 사용된 예문 2가지</p>
+            </div>
+        </div>
+
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header">Header</div>
+            <div class="card-body">
+                <h5 class="card-title">Light card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
+            </div>
+        </div>
+
+        <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <span style="font-size:xx-large; font-weight:bold">영어단어</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">단어 뜻 [한글]</h5>
+                <p class="card-text">단어가 사용된 예문 2가지</p>
+            </div>
+        </div>
+
+        <div class="card bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header">Header</div>
+            <div class="card-body">
+                <h5 class="card-title">Light card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
+                    card's content.</p>
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>
