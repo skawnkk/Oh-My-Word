@@ -14,20 +14,29 @@ def home():
 
 ## API 역할을 하는 부분
 @app.route('/word', methods=['POST'])
-def test_post():
+def make_word():
     word_receive = request.form['word_give']
     doc = {
        'word': word_receive
     }
     db.wordcards.insert_one(doc)
-   
-   return jsonify({'result':'success', 'msg': '이 요청은 POST!'})
+    return jsonify({'result':'success', 'msg': '등록완료!'})
 
 @app.route('/card', methods=['GET'])
-def test_get():
-   title_receive = request.args.get('title_give')
-   print(title_receive)
-   return jsonify({'result':'success', 'msg': '이 요청은 GET!'})
+def listing():
+    result = list(db.wordcards.find({},{'_id':0}))
+    return jsonify({'result': 'success', 'wordcards': result})
+
+@app.route('/nocard', methods=['post'])
+def delete():
+    word_receive = request.form['word_give']
+    db.wordcards.delete_one({'word':word_receive})
+    return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
+
+@app.route('/changecard', methods=['post'])
+def edit():
+    # db.wordcards.delete_one({})
+    return jsonify({'result': 'success', 'msg': '수정되었습니다.'})
 
 
 
