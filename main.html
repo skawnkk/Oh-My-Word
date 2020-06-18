@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <!-- 추가 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+
+<style>
+    body {
+        background-color: #FAFAFA;
+        font-family: 'Nanum Gothic', sans-serif;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .left {
+        float: left;
+        width: 30%;
+    }
+
+    .right {
+        float: right;
+        width: 70%;
+    }
+
+    .footer {
+        position: fixed;
+        margin-bottom: 0;
+        bottom: 0;
+        width: 100%;
+        height: 70px;
+        background-color: #007BFF;
+
+    }
+
+    .list {
+        width: 700px;
+        height: 620px;
+        overflow: scroll;
+        overflow-x: hidden;
+        margin-top: 50px;
+        margin-bottom: 100px;
+        margin-left: 20px;
+    }
+
+    h1 {
+        font-family: 'Gugi', cursive;
+        line-height: 75px;
+        float: right;
+        margin-top: 300px;
+        margin-right: 50px;
+        color: #857B7B;
+    }
+
+    .footer_btn {
+        color: #FAFAFA;
+        font-weight: bolder;
+        font-size: larger;
+        background-color: #007bff;
+        border: none;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function startnew() {
+        window.open('/listpage')
+
+        $.ajax({
+            type: 'POST',
+            url: '/new',
+            data: {},
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    window.location.reload();
+                }
+            }
+        })
+    }
+</script>
+
+<body>
+    <div class="left">
+        <h1>Oh, My Word !</h1>
+
+    </div>
+
+    <div class="right">
+        <div class="list">
+            <div class="list-group">
+                <!-- <a href="#" class="list-group-item list-group-item-action active" style="height:50px">
+                    day0 미드에서 본</a> -->
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px">
+                    day0 미드에서 본</a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div style="text-align: center; margin:0px 300px;">
+            <button onclick=startnew() class="footer_btn" style="float:left;">MAKE_NEW</button>
+            <button onclick="location.href='/index'" class="footer_btn" style="float:center;">EDIT</button>
+            <button onclick="location.href='https://naver.com'" class="footer_btn" style="float:right;">DELETE</button>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

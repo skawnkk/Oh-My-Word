@@ -79,7 +79,6 @@
             border-right: none;
             border-bottom-color: rgb(201, 197, 197);
             border-width: 1px;
-
         }
 
         .btn {
@@ -128,7 +127,6 @@
         $(document).ready(function () {
             $('#cards_box').html('')
             listing()
-            alert('로딩완료')
         });
 
         function enterkey() {
@@ -160,9 +158,7 @@
 
 
         function listing() {
-            //     // 1. 리뷰 목록을 서버에 요청하기
-            //     // 2. 요청 성공 여부 확인하기
-            //     // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
+   
             $.ajax({
                 type: "GET",
                 url: "/card",
@@ -171,7 +167,9 @@
                     if (response['result'] == 'success') {
                         let wordcard = response['wordcards'];
                         for (let i = 0; i < wordcard.length; i++) {
-                            make_card(wordcard[i]['word']);
+                        let word=wordcard[i]['word'];
+                        let meaning=wordcard[i]['meaning']
+                        make_card(word, meaning)
                         }
                     }
                     else {
@@ -181,19 +179,18 @@
             })
         }
 
-
-        function make_card(word) {
+        function make_card(word, meaning) {
             let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
                 <div class="card-header">
                 <span style="font-size:xx-large; font-weight:bold">${word}</span>
                 </div>
                 <div class="card-body">
-                <h5 class="card-title">단어 뜻 [한글]</h5>
+                <h5 class="card-title">${meaning}</h5>
                 <p class="card-text">단어가 사용된 예문 2가지</p>
                 </div>
                 <footer class="array">
-                    <button class="card_btn" onclick="edit_card()">편집</button>
-                    <button class="card_btn" onclick="delete_card(${word})">삭제</button></div>
+                    <button class="card_btn" onclick="edit_card(${meaning})">편집</button>
+                    <button class="card_btn" onclick="delete_card('${word}')">삭제</button></div>
                 </footer>`;
             $('#cards_box').append(temp_html);
         }
@@ -201,11 +198,11 @@
         function delete_card(word) {
             $.ajax({
                 type: 'POST',
-                url: '/nocard',
+                url: '/nocard', 
                 data: { word_give: word },
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        alert(삭제완료);
+                        alert('삭제완료');
                         window.location.reload();
                     }
                 }
@@ -230,12 +227,19 @@
 
 <body>
     <div class="head">
+        <!-- <button style="color:#007bff; font-size: xx-large; float:left; margin-top: 15px; margin-left:10px;" onclick="history.back(-1);">
+            <img src="pngwing.com.png"></button> -->
         <div class="menubar">
+
             <h1>My Word</h1>
             <div class="menu">
                 <button onclick="prompt('참고한 링크를 입력하세요.')">링크</button></li>
                 <button onclick="prompt('메모 or 참고한 글을 입력하면 되요.')">메모</button></li>
-                <button onclick="alert('단어장이 발행되었습니다 :D')">발행</button></li>
+                <button onclick="location.href='/'">저장</button></li>
+
+                <!-- "alert('단어장이 발행되었습니다 :D')"">발행</button></li> -->
+                <!-- <button type="button" class="navyBtn" onClick="location.href='PAGENAME.html'"></button> --> 
+
             </div>
         </div>
 
@@ -259,7 +263,7 @@
             </div>
             <div>
                 <button class="card_btn" onclick="edit_card()">편집</button>
-                <button class="card_btn" onclick="delete_card(word)">삭제</button></div>
+                <button class="card_btn" onclick="delete_card()">삭제</button></div>
         </div>
 
         <div id="card_form" class="card bg-light mb-3" style="max-width: 18rem;">
