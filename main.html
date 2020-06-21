@@ -86,20 +86,29 @@
 </style>
 
 <script>
-    function startnew() {
+    function startnew() {          
+        // window.location.href="/listpage"
         window.open('/listpage')
-
-        $.ajax({
-            type: 'POST',
-            url: '/new',
-            data: {},
-            success: function (response) {
-                if (response['result'] == 'success') {
-                    window.location.reload();
-                }
-            }
-        })
     }
+
+    // function startnew2(){
+    //     window.open('/listpage')
+    //     document.write(title)
+
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/new',
+    //         data: {title_give : title},
+    //         success: function (response) {
+    //             if (response['result'] == 'success') {
+    //                 window.location.reload();
+    //             }
+    //         }
+    //     })
+    // }
+    
+
+       
 </script>
 
 <body>
@@ -113,8 +122,7 @@
             <div class="list-group">
                 <!-- <a href="#" class="list-group-item list-group-item-action active" style="height:50px">
                     day0 미드에서 본</a> -->
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px">
-                    day0 미드에서 본</a>
+                <a href="#" id="ex" class="list-group-item list-group-item-action" style="height:50px">suits</a>
                 <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
                 <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
                 <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
@@ -141,8 +149,8 @@
 
     <div class="footer">
         <div style="text-align: center; margin:0px 300px;">
-            <button onclick=startnew() class="footer_btn" style="float:left;">MAKE_NEW</button>
-            <button onclick="location.href='/index'" class="footer_btn" style="float:center;">EDIT</button>
+            <input type="button" value="MAKE_NEW" onclick=startnew(); class="footer_btn" style="float:left;"></input>
+            <button onclick="location.href='/listpage'" class="footer_btn" style="float:center;">EDIT</button>
             <button onclick="location.href='https://naver.com'" class="footer_btn" style="float:right;">DELETE</button>
         </div>
     </div>

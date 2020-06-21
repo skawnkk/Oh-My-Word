@@ -11,7 +11,9 @@ app = Flask(__name__)
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<INDEX HTML을 주는 부분
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<INDEX HTML을 주는 부분
+
+
 @app.route('/')
 def home():
     return render_template('main.html')
@@ -22,6 +24,7 @@ def home():
 @app.route('/word', methods=['POST'])
 def make_word():
     word_receive = request.form['word_give']
+    title_receive = request.form['title_give']
     url = "http://endic.naver.com/search.nhn?query=" + word_receive
     data = requests.get(url)
     soup = BeautifulSoup(data.text, 'html.parser')
@@ -33,7 +36,8 @@ def make_word():
     except:
         result = "네이버 사전에 등재되어 있지 않습니다."
 
-    doc = {'word': word_receive,
+    doc = {'title': title_receive,
+           'word': word_receive,
            'meaning': result}
     db.wordcards.insert_one(doc)
 
@@ -42,7 +46,7 @@ def make_word():
 
 @app.route('/card', methods=['GET'])
 def listing():
-    result = list(db.wordcards.find({}, {'_id': 0}))
+    result=list(db.wordcards.find({'_id':0}))
     return jsonify({'result': 'success', 'wordcards': result})
 
 
@@ -87,10 +91,11 @@ def delete():
 def wordlist():
     return render_template('index.html')
 
-@app.route('/new', methods=['POST'])
-def startnew():
-    db.wordcards.remove({})
-    return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
+# @app.route('/new', methods=['POST'])
+# def startnew():
+#     db.wordcards.delete_many({})
+#     return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

@@ -122,9 +122,10 @@
             margin-left: 10px;
         }
     </style>
-    <script>
 
+    <script>
         $(document).ready(function () {
+            // <기존내용비우기
             $('#cards_box').html('')
             listing()
         });
@@ -136,7 +137,10 @@
         };
 
         function make_word() {
+            let title = $('#input_title').text();
             let word = $('#input_word').val();
+
+            // if(title=='')화면을 재 로딩할때, 타이틀은 바뀌지 않게 고정할 수 있을까?
 
             if (word == '') {
                 alert('영단어를 입력하세요');
@@ -145,31 +149,46 @@
                 $.ajax({
                     type: 'POST',
                     url: '/word',
-                    data: { word_give: word },
+                    data: { word_give: word, title_give: title },
                     success: function (response) {
-                        if (response['result'] == 'success') {
-                            alert(response['msg']);
-                            window.location.reload();
+                        if (response['result'] == 'success') {$('#input_word').load(document.URL +  ' #input_word');}
+                            
+                        
+                        // listing2()
+                        // alert(response['msg']);
+                            //                         
                         }
-                    }
-                })
+                    })
             }
         }
-
+        
 
         function listing() {
-   
+            let title = $('#input_title').text();
+            if(title=='') {
+                let title2 = prompt('제목을 입력하세요');
+                $('#input_title').append(title2);
+                }
+            else{
+                listing2()
+                }
+        }
+
+        function listing2(){
+
             $.ajax({
                 type: "GET",
                 url: "/card",
                 data: {},
                 success: function (response) {
                     if (response['result'] == 'success') {
+                        let title = $('#input_title').text();
                         let wordcard = response['wordcards'];
+                            
                         for (let i = 0; i < wordcard.length; i++) {
-                        let word=wordcard[i]['word'];
-                        let meaning=wordcard[i]['meaning']
-                        make_card(word, meaning)
+                            let word = wordcard[i]['word']['title'==title];
+                            let meaning = wordcard[i]['meaning']['title'==title];
+                            make_card(word, meaning)
                         }
                     }
                     else {
@@ -193,12 +212,13 @@
                     <button class="card_btn" onclick="delete_card('${word}')">삭제</button></div>
                 </footer>`;
             $('#cards_box').append(temp_html);
+            $('input_word').empty();
         }
 
         function delete_card(word) {
             $.ajax({
                 type: 'POST',
-                url: '/nocard', 
+                url: '/nocard',
                 data: { word_give: word },
                 success: function (response) {
                     if (response['result'] == 'success') {
@@ -220,8 +240,6 @@
                 }
             });
         }
-
-
     </script>
 </head>
 
@@ -238,14 +256,14 @@
                 <button onclick="location.href='/'">저장</button></li>
 
                 <!-- "alert('단어장이 발행되었습니다 :D')"">발행</button></li> -->
-                <!-- <button type="button" class="navyBtn" onClick="location.href='PAGENAME.html'"></button> --> 
+                <!-- <button type="button" class="navyBtn" onClick="location.href='PAGENAME.html'"></button> -->
 
             </div>
         </div>
 
         <div class="input">
-            <p><input id="input_title" class="input_st" type="text" placeholder="타이틀 입력"></p>
-            <p><input id="input_word" class="input_st" onkeyup="enterkey();" type="text" placeholder="영어 단어 입력">
+            <p><text id="input_title" class="input_st" type="text" placeholder="________________________________________"></text></p>
+            <p><input id="input_word" class="input_st" onkeyup="enterkey();" type="text" placeholder="영어 단어 입력"></input>
                 <button class="btn" type="button" onclick="make_word()">등록</button></p>
         </div>
     </div>
@@ -253,7 +271,7 @@
 
     <div id="cards_box" class="wrapper_2">
 
-        <div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        <!-- <div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
             <div class="card-header">
                 <span style="font-size:xx-large; font-weight:bold">영어단어</span>
             </div>
@@ -351,7 +369,7 @@
                 <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
                     card's content.</p>
             </div>
-        </div>
+        </div> -->
 
     </div>
 
