@@ -226,6 +226,20 @@
                 }
             });
         }
+
+        function save_title(){
+            let title= prompt('제목을 꼭 입력해주세요');
+            $('#input_title').append(title);
+
+            $.ajax({
+                type: 'POST',
+                url: '/savetitle',
+                data: {title_give:title},
+                success: function (response) {
+                    location.href='/'}
+            })
+        }
+        
     </script>
 </head>
 
@@ -238,7 +252,7 @@
             <div class="menu">
                 <button onclick="prompt('참고한 링크를 입력하세요.')">링크</button></li>
                 <button onclick="prompt('메모 or 참고한 글을 입력하면 되요.')">메모</button></li>
-                <button onclick="location.href='/'">저장</button></li>
+                <button onclick="save_title()">저장</button></li>
 
                 <!-- "alert('단어장이 발행되었습니다 :D')"">발행</button></li> -->
                 <!-- <button type="button" class="navyBtn" onClick="location.href='PAGENAME.html'"></button> -->

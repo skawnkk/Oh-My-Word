@@ -88,70 +88,83 @@
 <script>
 
     $(document).ready(function () {
-        filelist()
+        folderlist()
     });
 
-    function filelist(){
-        
+    function folderlist() {
+        console.log('start')
+
         $.ajax({
-                type: "GET",
-                url: "/filelist",
-                data: {},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        let foldername = response['wordcards'];
-                            
-                        for (let i = 0; i < foldername.length; i++) {
-                            let foldertitle = foldername[i]['title'];
-                            make_folder(foldertitle)}
+            type: "GET",
+            url: "/folderlist",
+            data: {},
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    console.log('success')
+
+                    let folderlists = response['folderlists'];
+                    for (let i = 0; i < folderlists.length; i++) {
+                        let foldertitle = folderlists[i]['title'];
+                        console.log(foldertitle)
+                        make_folder(foldertitle)
                     }
                 }
+            }
         })
     }
 
-
-        function make_folder(foldertitle) {
-        //     let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-        //         <div class="card-header">
-        //         <span style="font-size:xx-large; font-weight:bold">${word}</span>
-        //         </div>
-        //         <div class="card-body">
-        //         <h5 class="card-title">${meaning}</h5>
-        //         <p class="card-text">단어가 사용된 예문 2가지</p>
-        //         </div>
-        //         <footer class="array">
-        //             <button class="card_btn" onclick="edit_card(${meaning})">편집</button>
-        //             <button class="card_btn" onclick="location.href='http://endic.naver.com/search.nhn?query= + ${word}'>상세</button>
-        //             <button class="card_btn" onclick="delete_card('${word}')">삭제</button></div>
-        //         </footer>`;
-        //     $('#cards_box').append(temp_html);
-        //     $('#input_word').empty();
-
+    function make_folder(foldertitle) {
+        let temp_html = `<a href="#" id="list" onclick=target_listing(${foldertitle}) class="list-group-item list-group-item-action" style="height:50px">${foldertitle}</a>`
+        $('#list').append(temp_html);
     }
 
+    function target_listing(foldertitle) {
+        console.log(foldertitle)
 
-    function startnew() {
-        // window.location.href="/listpage"
-        
-        window.open('/listpage')
+        $.ajax({
+            type: "GET",
+            url: "/target" + "?foldertitle=" + foldertitle,
+            data: {},
+            success: function (response) {
+                console.log('in ajax')
+                if (response['result'] == 'success') {
+                    let targets = response['targets'];
+                    for (let i = 0; i < targets.length; i++) {
+                        let word = targets[i]['word'][{ 'title': foldertitle }];
+                        let meaning = targets[i]['meaning'][{ 'title': foldertitle }];
+                        make_card(word, meaning);
+                    }
+                }
+                else { alert('불러오기 오류'); }
+            }
+        })
     }
 
-
-
-
-    function getdata() {
-        window.open('/listpage')
+    function make_card(word, meaning) {
+        let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                <div class="card-header">
+                    <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${meaning}</h5>
+                    <p class="card-text">단어가 사용된 예문 2가지</p>
+                </div>
+                <footer class="array">
+                    <button class="card_btn">편집</button>
+                    <button class="card_btn" onclick="delete_card(${word})">삭제</button>
+                </footer></div>`;
+        $('#cards_box').append(temp_html);
     }
 
     function deletefolder() {
-        let title = $('#1').text();
+        let title = $('#list').text();
         $.ajax({
             type: 'POST',
             url: '/deletefolder',
             data: { title_give: title },
             success: function (response) {
                 if (response['result'] == 'success') {
-                    deletetargetfolder();
+                    folderlist();
 
                 }
             }
@@ -171,28 +184,10 @@
     <div class="right">
         <div class="list">
             <div class="list-group">
-                <!-- <a href="#" class="list-group-item list-group-item-action active" style="height:50px">
-                    day0 미드에서 본</a> -->
-                <a href="#" id="1" class="list-group-item list-group-item-action" style="height:50px">suits</a>
-                <a href="#" id="2" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" id="3" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+
+                <p id="list"></p>
+
+                <!-- <a href="#" id="list" onclick=linkmove() class="list-group-item list-group-item-action" style="height:50px"></a> -->
 
             </div>
         </div>

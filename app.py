@@ -24,6 +24,8 @@ def home():
     return render_template('main.html')
 
 # API 역할을 하는 부분
+
+
 @app.route('/word', methods=['POST'])
 def make_word():
     word_receive = request.form['word_give']
@@ -43,8 +45,8 @@ def make_word():
         'title': title_receive,
         'word': word_receive,
         'meaning': result
-        }
-           
+    }
+
     db.wordcards.insert_one(doc)
 
     return jsonify({'result': 'success', 'msg': '등록완료!'})
@@ -52,13 +54,29 @@ def make_word():
 
 @app.route('/word', methods=['GET'])
 def listing():
-    targets=list(db.wordcards.find({'title':''}, {'_id':0}))
-    return jsonify({'result':'success', 'targets':targets})
+    targets = list(db.wordcards.find({'title': ''}, {'_id': 0}))
+    return jsonify({'result': 'success', 'targets': targets})
+
+
+@app.route('/target', methods=['GET'])
+def target_listing():
+    foldertitle = request.args.get('foldertitle')
+    print(foldertitle)
+    targets = list(db.wordcards.find({}, {'_id': 0}))
+    return jsonify({'result': 'success', 'targets': targets})
+
 
 @app.route('/nocard', methods=['post'])
 def delete():
     word_receive = request.form['word_give']
-    db.wordcards.delete_one({'word': word_receive},{'title':''})
+    db.wordcards.delete_one({'word': word_receive}, {'title': ''})
+    return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
+
+
+@app.route('/savetitle', methods=['post'])
+def savetitle():
+    title_receive = request.form['title_give']
+    db.wordcards.update_many({'title': ''}, {'$set': {'title': title_receive}})
     return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
 
 # @app.route('/changecard', methods=['post'])
@@ -97,10 +115,10 @@ def wordlist():
     return render_template('index.html')
 
 
-@app.route('/filelist', methods=['GET'])
-def filelist():
-    result = list(db.wordcards.find({'_id': 0}))
-    return jsonify({'result': 'success', 'wordcards': result})
+@app.route('/folderlist', methods=['GET'])
+def folderlist():
+    folderlists = list(db.wordcards.find({}, {'_id': False}))
+    return jsonify({'result': 'success', 'folderlists': folderlists})
 
 
 @app.route('/deletefolder', methods=['post'])
