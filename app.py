@@ -4,23 +4,26 @@ import requests
 from openpyxl import load_workbook
 from flask import Flask, render_template, jsonify, request
 app = Flask(__name__)
-# 엑셀화
+
 # 크롤링
 
 # 파이몽고
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
+work_book = load_workbook('prac01.xlsx')
+work_sheet = work_book['prac']
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
+
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<INDEX HTML을 주는 부분
-
-
 @app.route('/')
 def home():
     return render_template('main.html')
 
 # API 역할을 하는 부분
-
-
 @app.route('/word', methods=['POST'])
 def make_word():
     word_receive = request.form['word_give']
@@ -36,24 +39,26 @@ def make_word():
     except:
         result = "네이버 사전에 등재되어 있지 않습니다."
 
-    doc = {'title': title_receive,
-           'word': word_receive,
-           'meaning': result}
+    doc = {
+        'title': title_receive,
+        'word': word_receive,
+        'meaning': result
+        }
+           
     db.wordcards.insert_one(doc)
 
     return jsonify({'result': 'success', 'msg': '등록완료!'})
 
 
-@app.route('/card', methods=['GET'])
+@app.route('/word', methods=['GET'])
 def listing():
-    result=list(db.wordcards.find({'_id':0}))
-    return jsonify({'result': 'success', 'wordcards': result})
-
+    targets=list(db.wordcards.find({'title':''}, {'_id':0}))
+    return jsonify({'result':'success', 'targets':targets})
 
 @app.route('/nocard', methods=['post'])
 def delete():
     word_receive = request.form['word_give']
-    db.wordcards.delete_one({'word': word_receive})
+    db.wordcards.delete_one({'word': word_receive},{'title':''})
     return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
 
 # @app.route('/changecard', methods=['post'])
@@ -90,6 +95,19 @@ def delete():
 @app.route('/listpage')
 def wordlist():
     return render_template('index.html')
+
+
+@app.route('/filelist', methods=['GET'])
+def filelist():
+    result = list(db.wordcards.find({'_id': 0}))
+    return jsonify({'result': 'success', 'wordcards': result})
+
+
+@app.route('/deletefolder', methods=['post'])
+def deletefoler():
+    title_receive = request.form['title_give']
+    db.wordcards.delete_many({'title': title_receive})
+    return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
 
 # @app.route('/new', methods=['POST'])
 # def startnew():

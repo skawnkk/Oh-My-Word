@@ -86,29 +86,78 @@
 </style>
 
 <script>
-    function startnew() {          
+
+    $(document).ready(function () {
+        filelist()
+    });
+
+    function filelist(){
+        
+        $.ajax({
+                type: "GET",
+                url: "/filelist",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let foldername = response['wordcards'];
+                            
+                        for (let i = 0; i < foldername.length; i++) {
+                            let foldertitle = foldername[i]['title'];
+                            make_folder(foldertitle)}
+                    }
+                }
+        })
+    }
+
+
+        function make_folder(foldertitle) {
+        //     let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        //         <div class="card-header">
+        //         <span style="font-size:xx-large; font-weight:bold">${word}</span>
+        //         </div>
+        //         <div class="card-body">
+        //         <h5 class="card-title">${meaning}</h5>
+        //         <p class="card-text">단어가 사용된 예문 2가지</p>
+        //         </div>
+        //         <footer class="array">
+        //             <button class="card_btn" onclick="edit_card(${meaning})">편집</button>
+        //             <button class="card_btn" onclick="location.href='http://endic.naver.com/search.nhn?query= + ${word}'>상세</button>
+        //             <button class="card_btn" onclick="delete_card('${word}')">삭제</button></div>
+        //         </footer>`;
+        //     $('#cards_box').append(temp_html);
+        //     $('#input_word').empty();
+
+    }
+
+
+    function startnew() {
         // window.location.href="/listpage"
+        
         window.open('/listpage')
     }
 
-    // function startnew2(){
-    //     window.open('/listpage')
-    //     document.write(title)
 
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/new',
-    //         data: {title_give : title},
-    //         success: function (response) {
-    //             if (response['result'] == 'success') {
-    //                 window.location.reload();
-    //             }
-    //         }
-    //     })
-    // }
-    
 
-       
+
+    function getdata() {
+        window.open('/listpage')
+    }
+
+    function deletefolder() {
+        let title = $('#1').text();
+        $.ajax({
+            type: 'POST',
+            url: '/deletefolder',
+            data: { title_give: title },
+            success: function (response) {
+                if (response['result'] == 'success') {
+                    deletetargetfolder();
+
+                }
+            }
+        })
+    }
+
 </script>
 
 <body>
@@ -117,14 +166,16 @@
 
     </div>
 
+
+
     <div class="right">
         <div class="list">
             <div class="list-group">
                 <!-- <a href="#" class="list-group-item list-group-item-action active" style="height:50px">
                     day0 미드에서 본</a> -->
-                <a href="#" id="ex" class="list-group-item list-group-item-action" style="height:50px">suits</a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
-                <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" id="1" class="list-group-item list-group-item-action" style="height:50px">suits</a>
+                <a href="#" id="2" class="list-group-item list-group-item-action" style="height:50px"></a>
+                <a href="#" id="3" class="list-group-item list-group-item-action" style="height:50px"></a>
                 <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
                 <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
                 <a href="#" class="list-group-item list-group-item-action" style="height:50px"></a>
@@ -150,8 +201,8 @@
     <div class="footer">
         <div style="text-align: center; margin:0px 300px;">
             <input type="button" value="MAKE_NEW" onclick=startnew(); class="footer_btn" style="float:left;"></input>
-            <button onclick="location.href='/listpage'" class="footer_btn" style="float:center;">EDIT</button>
-            <button onclick="location.href='https://naver.com'" class="footer_btn" style="float:right;">DELETE</button>
+            <button onclick="editstart()" class="footer_btn" style="float:center;">EDIT</button>
+            <button onclick="deletefolder()" class="footer_btn" style="float:right;">DELETE</button>
         </div>
     </div>
 
