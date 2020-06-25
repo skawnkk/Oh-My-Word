@@ -130,8 +130,8 @@
         });
 
         function make_word() {
-              let word = $('#input_word').val();
-              let title =$('#input_title').text();
+            let word = $('#input_word').val();
+            let title = $('#input_title').text();
             console.log(title)
             console.log(word)
 
@@ -141,7 +141,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/word',
-                    data: {word_give: word, title_give: title},
+                    data: { word_give: word, title_give: title },
                     success: function (response) {
                         console.log('good')
                         if (response['result'] == 'success') {
@@ -158,20 +158,21 @@
             }
         };
 
-        function listing() {
+        function listing(clicked_id) {
             console.log('listing')
 
             $.ajax({
                 type: "GET",
-                url: "/word",
+                url: "/target" + "?clicked_id" + "clicked_id",
                 data: {},
                 success: function (response) {
                     console.log('in ajax')
+
                     if (response['result'] == 'success') {
                         let targets = response['targets'];
-                        for (let i = 0; i < targets.length; i++) {                            
-                            let word = targets[i]['word'];
-                            let meaning = targets[i]['meaning'];
+                        for (let i = 0; i < targets.length; i++) {
+                            let word = targets[i]['word'][{ 'title': clicked_id }];
+                            let meaning = targets[i]['meaning'][{ 'title': clicked_id }];
                             make_card(word, meaning);
                         }
                     }
@@ -202,7 +203,7 @@
 
         function delete_card(word) {
 
-  
+
             $.ajax({
                 type: 'POST',
                 url: '/nocard',
@@ -228,16 +229,17 @@
             });
         }
 
-        function save_title(){
-            let title= prompt('제목을 꼭 입력해주세요');
+        function save_title() {
+            let title = prompt('제목을 꼭 입력해주세요');
             $('#input_title').append(title);
 
             $.ajax({
                 type: 'POST',
                 url: '/savetitle',
-                data: {title_give:title},
+                data: { title_give: title },
                 success: function (response) {
-                    location.href='/'}
+                    location.href = '/'
+                }
             })
         }
 

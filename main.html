@@ -104,7 +104,7 @@
 
                     let folderlists = response['folderlists'];
                     for (let i = 0; i < folderlists.length; i++) {
-                        let foldertitle = folderlists[i]['title'];
+                        let foldertitle = folderlists[i];
                         console.log(foldertitle)
                         make_folder(foldertitle)
                     }
@@ -114,31 +114,26 @@
     }
 
     function make_folder(foldertitle) {
-        let temp_html = `<a href="#" id="list" onclick=target_listing(${foldertitle}) class="list-group-item list-group-item-action" style="height:50px">${foldertitle}</a>`
+        let temp_html = `<a href="#" id="${foldertitle}"  onclick="reply_click(this.id)"
+            class="list-group-item list-group-item-action" style="height:50px">${foldertitle}</a>`
         $('#list').append(temp_html);
     }
 
-    function target_listing(foldertitle) {
-        console.log(foldertitle)
-
-        $.ajax({
-            type: "GET",
-            url: "/target" + "?foldertitle=" + foldertitle,
-            data: {},
-            success: function (response) {
-                console.log('in ajax')
-                if (response['result'] == 'success') {
-                    let targets = response['targets'];
-                    for (let i = 0; i < targets.length; i++) {
-                        let word = targets[i]['word'][{ 'title': foldertitle }];
-                        let meaning = targets[i]['meaning'][{ 'title': foldertitle }];
-                        make_card(word, meaning);
-                    }
-                }
-                else { alert('불러오기 오류'); }
-            }
-        })
+    function reply_click(clicked_id) {
+        console.log(clicked_id)
     }
+
+
+    function edit() {
+        window.location.href('/listpage2');
+    }
+
+
+
+    function make_new() {
+        window.location.href('/listpage');
+    }
+
 
     function make_card(word, meaning) {
         let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
@@ -187,7 +182,8 @@
 
                 <p id="list"></p>
 
-                <!-- <a href="#" id="list" onclick=linkmove() class="list-group-item list-group-item-action" style="height:50px"></a> -->
+                <a href="#" id="list" onclick=linkmove() class="list-group-item list-group-item-action"
+                    style="height:50px"></a>
 
             </div>
         </div>
@@ -195,9 +191,9 @@
 
     <div class="footer">
         <div style="text-align: center; margin:0px 300px;">
-            <input type="button" value="MAKE_NEW" onclick=startnew(); class="footer_btn" style="float:left;"></input>
-            <button onclick="editstart()" class="footer_btn" style="float:center;">EDIT</button>
-            <button onclick="deletefolder()" class="footer_btn" style="float:right;">DELETE</button>
+            <a href="/listpage" type="button" class="footer_btn" style="float:left;">MAKE_NEW</a>
+            <a href="/listpage2" type="button" class="footer_btn" style="float:center;">EDIT</a>
+            <a href="deletefolder()" type="button" class="footer_btn" style="float:right;">DELETE</a>
         </div>
     </div>
 
