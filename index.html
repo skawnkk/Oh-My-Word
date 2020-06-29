@@ -24,6 +24,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
 
+    <meta property="og:title" content="OH_My_Word!" />
+    <meta property="og:description" content="쉽고 빠르게 만드는 영어단어장" />
+    <meta property="og:image" content="{{ url_for('static', filename='og.jpg') }}" />
+
 
     <title>MY_WORDS</title>
 
@@ -126,12 +130,80 @@
     <script>
         $(document).ready(function () {
             $('#cards_box').html('')
-            listing();
+            // TODO
+            let title = $('#input_title').text()
+            readWord(title);
+            // readWord('1');
         });
 
+        function readWord(title) {
+            console.log(title)
+            console.log('readWord')
+            // title = $('#input_title').text()
+            // let title = '1';
+            $('#cards_box').html('');
+
+            $.ajax({
+                type: "GET",
+                url: "/card" + "?title=" + title,
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let wordcard = response['wordcards'];
+
+                        // console.log(title)
+
+                        for (let i = 0; i < wordcard.length; i++) {
+                            let word = wordcard[i]['word'];
+                            let meaning = wordcard[i]['meaning'];
+                            make_card(word, meaning, title)
+                        }
+                    }
+                    else {
+                        alert('불러오기 오류');
+                    }
+                }
+            })
+        }
+
+        function make_card(word, meaning, title) {
+
+            console.log('make_card')
+            let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                <div class="card-header">
+                    <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${meaning}</h5>
+                  
+                </div>
+                <footer class="array">
+                    <button class="card_btn">편집</button>
+                    <button class="card_btn" onclick="delete_card('${word}','${title}')">삭제</button>
+                </footer></div>`;
+            console.log('work');
+            console.log(title);
+            console.log(word);
+            // let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            //     <div class="card-header">
+            //         <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
+            //     </div>
+            //     <div class="card-body">
+            //         <h5 class="card-title">${meaning}</h5>
+            //         <p class="card-text">단어가 사용된 예문 2가지</p>
+            //     </div>
+            //     <footer class="array">
+            //         <button class="card_btn">편집</button>
+            //         <button class="card_btn" onclick="delete_card(${word})">삭제</button>
+            //     </footer></div>`;
+
+            $('#cards_box').append(temp_html);
+
+        }
+
         function make_word() {
-              let word = $('#input_word').val();
-              let title =$('#input_title').text();
+            let word = $('#input_word').val();
+            let title = $('#input_title').text();
             console.log(title)
             console.log(word)
 
@@ -141,11 +213,11 @@
                 $.ajax({
                     type: 'POST',
                     url: '/word',
-                    data: {word_give: word, title_give: title},
+                    data: { word_give: word, title_give: title },
                     success: function (response) {
                         console.log('good')
                         if (response['result'] == 'success') {
-                            listing()
+                            readWord('')
                         }
                     }
                 })
@@ -158,65 +230,28 @@
             }
         };
 
-        function listing() {
-            console.log('listing')
-
-            $.ajax({
-                type: "GET",
-                url: "/word",
-                data: {},
-                success: function (response) {
-                    console.log('in ajax')
-                    if (response['result'] == 'success') {
-                        let targets = response['targets'];
-                        for (let i = 0; i < targets.length; i++) {                            
-                            let word = targets[i]['word'];
-                            let meaning = targets[i]['meaning'];
-                            make_card(word, meaning);
-                        }
-                    }
-                    else { alert('불러오기 오류'); }
-                }
-            })
-        }
-
-        function make_card(word, meaning) {
-            let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                <div class="card-header">
-                    <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">${meaning}</h5>
-                    <p class="card-text">단어가 사용된 예문 2가지</p>
-                </div>
-                <footer class="array">
-                    <button class="card_btn">편집</button>
-                    <button class="card_btn" onclick="delete_card(${word})">삭제</button>
-                </footer></div>`;
-            $('#cards_box').append(temp_html);
-        }
-
         // $('#input_word').empty();
         // <button class="card_btn" onclick="location.href='http://endic.naver.com/search.nhn?query= + ${word}'">상세</button>
         // 새로고침도하고..마지막 단어로 포커스이동
 
-        function delete_card(word) {
+        function delete_card(word, title) {
+            // title = $('#input_title').text()
 
-  
+
             $.ajax({
                 type: 'POST',
                 url: '/nocard',
-                data: { word_give: word },
+                data: { word_give: word, title_give: title },
                 success: function (response) {
                     if (response['result'] == 'success') {
                         alert('삭제완료');
-                        window.location.reload();
+                        readWord();
                     }
                 }
             })
         }
 
-        function edit_card() {
+        function edit_card(word) {
             $.ajax({
                 type: 'POST',
                 url: '/changecard',
@@ -228,32 +263,81 @@
             });
         }
 
-        function save_title(){
-            let title= prompt('제목을 꼭 입력해주세요');
+        function save_title() {
+            let title = prompt('제목을 꼭 입력해주세요');
             $('#input_title').append(title);
 
             $.ajax({
                 type: 'POST',
                 url: '/savetitle',
-                data: {title_give:title},
+                data: { title_give: title },
                 success: function (response) {
-                    location.href='/'}
+                    location.href = '/'
+                }
             })
         }
 
+        function EXCEL() {
+
+            let word = $('#word').text();
+            let meaning = $('#meaning').text();
+            let title = $('#input_title').text();
+
+
+            $.ajax({
+                type: 'POST',
+                url: '/excel',
+                data: { word_give: word, meaning_give: meaning, title_give: title },
+                success: function (response) {
+                    alert(msg)
+                }
+            })
+
+        }
+
+        function MEMO() {
+
+            $.ajax({
+                type: 'POST',
+                url: '/MEMO',
+                data: { contents_give: contents },
+                success: function (response) {
+        
+                }
+            })
+        }
+
+        // function openclose() {
+        //     let status = $('#post-box').css('display');
+        //     if (status == 'block') {
+        //         $('#post-box').hide()
+        //         $('#posting-box-btn').text('포스팅박스 열기')
+        //     } else {
+        //         $('#post-box').show()
+        //         $('#posting-box-btn').text('포스팅박스 닫기')
+        //     }
+        // }
+
+
+
+
     </script>
+
 </head>
+
 
 <body>
     <div class="head">
 
         <div class="menubar">
 
-            <h1>My Word</h1>
+            <h1 type="button" onclick="location.href='/'" style="cursor:pointer">My Word</h1>
             <div class="menu">
-                <button onclick="prompt('참고한 링크를 입력하세요.')">링크</button></li>
-                <button onclick="prompt('메모 or 참고한 글을 입력하면 되요.')">메모</button></li>
-                <button onclick="save_title()">저장</button></li>
+                <button onclick="EXCEL()">다운로드</button></li>
+                <button onclick="memo()"">메모</button></li>
+                <!-- <iframe src="https://www.everdevel.com" style="width:90%" height="500" scrolling="auto">
+                </iframe> -->
+                <button onclick=" save_title()">저장</button></li>
 
                 <!-- "alert('단어장이 발행되었습니다 :D')"">발행</button></li> -->
                 <!-- <button type="button" class="navyBtn" onClick="location.href='PAGENAME.html'"></button> -->
@@ -262,8 +346,9 @@
         </div>
 
         <div class="input">
+
             <p><text id="input_title" class="input_st" type="text"
-                    placeholder="________________________________________"></text></p>
+                    placeholder="________________________________________">{{pagetitle}}</text></p>
             <p><input id="input_word" class="input_st" onkeyup="enterkey();" type="text" placeholder="영어 단어 입력"></input>
                 <button class="btn" type="button" onclick="make_word()">등록</button></p>
         </div>

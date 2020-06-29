@@ -24,6 +24,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
     <!-- 추가 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta property="og:title" content="OH_My_Word!" />
+    <meta property="og:description" content="쉽고 빠르게 만드는 영어단어장" />
+    <meta property="og:image" content="{{ url_for('static', filename='og.jpg') }}" />
+
 </head>
 
 <style>
@@ -113,21 +118,16 @@
         })
     }
 
+
     function make_folder(foldertitle) {
-        let temp_html = `<a href="#" id="${foldertitle}"  onclick="reply_click(this.id)"
-            class="list-group-item list-group-item-action" style="height:50px">${foldertitle}</a>`
+
+        let temp_html = `   <a href="/listpage2?pagetitle='${foldertitle}'" id="${foldertitle}" class="list-group-item list-group-item-action" style="height:50px">${foldertitle}</a>`
+
+
+
+
         $('#list').append(temp_html);
     }
-
-    function reply_click(clicked_id) {
-        console.log(clicked_id)
-    }
-
-
-    function edit() {
-        window.location.href('/listpage2');
-    }
-
 
 
     function make_new() {
@@ -137,26 +137,27 @@
 
     function make_card(word, meaning) {
         let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                <div class="card-header">
-                    <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">${meaning}</h5>
-                    <p class="card-text">단어가 사용된 예문 2가지</p>
-                </div>
-                <footer class="array">
-                    <button class="card_btn">편집</button>
-                    <button class="card_btn" onclick="delete_card(${word})">삭제</button>
-                </footer></div>`;
+                    <div class="card-header">
+                        <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">${meaning}</h5>
+                        <p class="card-text">단어가 사용된 예문 2가지</p>
+                    </div>
+                    <footer class="array">
+                        <button class="card_btn">편집</button>
+                        <button class="card_btn" onclick="delete_card(${word})">삭제</button>
+                    </footer></div>`;
         $('#cards_box').append(temp_html);
     }
 
-    function deletefolder() {
-        let title = $('#list').text();
+    function deletefolder(pagetitle) {
+
+
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '/deletefolder',
-            data: { title_give: title },
+            data: { },
             success: function (response) {
                 if (response['result'] == 'success') {
                     folderlist();
@@ -179,21 +180,27 @@
     <div class="right">
         <div class="list">
             <div class="list-group">
-
                 <p id="list"></p>
 
-                <a href="#" id="list" onclick=linkmove() class="list-group-item list-group-item-action"
-                    style="height:50px"></a>
+                <!-- <a href="/listpage2?pagetitle='${foldertitle}'"id="${foldertitle}"
+                    class="list-group-item list-group-item-action" style="height:50px">${foldertitle}</a> -->
+<!-- 
+                <p id="${foldertitle}" class="list-group-item list-group-item-action" style="height:50px">${foldertitle}
+                    <a href="/listpage2?pagetitle='${foldertitle}'" style="margin-right: 10px;">EDIT</a>
+                    <a href="#" onclick="deletefolder()" style="margin-right: 10px;">DELETE</a>
+                </p> -->
 
             </div>
+
         </div>
     </div>
+
 
     <div class="footer">
         <div style="text-align: center; margin:0px 300px;">
             <a href="/listpage" type="button" class="footer_btn" style="float:left;">MAKE_NEW</a>
             <a href="/listpage2" type="button" class="footer_btn" style="float:center;">EDIT</a>
-            <a href="deletefolder()" type="button" class="footer_btn" style="float:right;">DELETE</a>
+            <a onclick="deletefolder()" type="button" class="footer_btn" style="float:right; color:#FAFAFA">DELETE</a>
         </div>
     </div>
 
