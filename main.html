@@ -88,6 +88,11 @@
         margin-top: 20px;
         cursor: pointer;
     }
+
+    .folder_btn {
+        color: #007BFF;
+        cursor: pointer;
+    }
 </style>
 
 <script>
@@ -97,7 +102,6 @@
     });
 
     function folderlist() {
-        console.log('start')
 
         $.ajax({
             type: "GET",
@@ -105,12 +109,11 @@
             data: {},
             success: function (response) {
                 if (response['result'] == 'success') {
-                    console.log('success')
 
                     let folderlists = response['folderlists'];
                     for (let i = 0; i < folderlists.length; i++) {
                         let foldertitle = folderlists[i];
-                        console.log(foldertitle)
+
                         make_folder(foldertitle)
                     }
                 }
@@ -121,10 +124,14 @@
 
     function make_folder(foldertitle) {
 
-        let temp_html = `   <a href="/listpage2?pagetitle='${foldertitle}'" id="${foldertitle}" class="list-group-item list-group-item-action" style="height:50px">${foldertitle}</a>`
-
-
-
+        let temp_html =  `<div class="list-group-item list-group-item-action">
+                    <a id="${foldertitle}">${foldertitle}</a>
+                        <div style="float:right; margin-right: 20px">
+                            <a href="/listpage2?pagetitle='${foldertitle}'" style="padding-right: 10px;">EDIT</a>
+                            <a type="text" style="color:#007BFF; cursor: pointer;"
+                                onclick="deletefolder('${foldertitle}')">DELETE</a>
+                        </div>
+                </div>`
 
         $('#list').append(temp_html);
     }
@@ -151,17 +158,21 @@
         $('#cards_box').append(temp_html);
     }
 
-    function deletefolder(pagetitle) {
+    function deletefolder(foldertitle) {
 
+        console.log('delete')
+        console.log(foldertitle)
 
         $.ajax({
-            type: 'GET',
+
+            type: 'POST',
             url: '/deletefolder',
-            data: { },
+            data: { foldertitle_give: foldertitle },
             success: function (response) {
                 if (response['result'] == 'success') {
-                    folderlist();
 
+                    alert('success')
+                    folderlist();
                 }
             }
         })
@@ -182,13 +193,18 @@
             <div class="list-group">
                 <p id="list"></p>
 
-                <!-- <a href="/listpage2?pagetitle='${foldertitle}'"id="${foldertitle}"
-                    class="list-group-item list-group-item-action" style="height:50px">${foldertitle}</a> -->
-<!-- 
-                <p id="${foldertitle}" class="list-group-item list-group-item-action" style="height:50px">${foldertitle}
-                    <a href="/listpage2?pagetitle='${foldertitle}'" style="margin-right: 10px;">EDIT</a>
-                    <a href="#" onclick="deletefolder()" style="margin-right: 10px;">DELETE</a>
-                </p> -->
+                <!-- <div class="list-group-item list-group-item-action">
+                    <a id="${foldertitle}">${foldertitle}</a>
+                        <div style="float:right; margin-right: 20px">
+                            <a href="/listpage2?pagetitle='${foldertitle}'" style="padding-right: 10px;">EDIT</a>
+                            <a type="text" style="color:#007BFF; cursor: pointer;"
+                                onclick="deletefolder('${foldertitle}')">DELETE</a>
+                        </div>
+                </div> -->
+
+
+
+
 
             </div>
 
@@ -198,10 +214,8 @@
 
     <div class="footer">
         <div style="text-align: center; margin:0px 300px;">
-            <a href="/listpage" type="button" class="footer_btn" style="float:left;">MAKE_NEW</a>
-            <a href="/listpage2" type="button" class="footer_btn" style="float:center;">EDIT</a>
-            <a onclick="deletefolder()" type="button" class="footer_btn" style="float:right; color:#FAFAFA">DELETE</a>
-        </div>
+            <a href="/listpage" type="button" class="footer_btn">MAKE_NEW</a>
+                   </div>
     </div>
 
 

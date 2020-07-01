@@ -137,10 +137,7 @@
         });
 
         function readWord(title) {
-            console.log(title)
-            console.log('readWord')
-            // title = $('#input_title').text()
-            // let title = '1';
+    
             $('#cards_box').html('');
 
             $.ajax({
@@ -168,7 +165,6 @@
 
         function make_card(word, meaning, title) {
 
-            console.log('make_card')
             let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
                 <div class="card-header">
                     <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
@@ -181,9 +177,7 @@
                     <button class="card_btn">편집</button>
                     <button class="card_btn" onclick="delete_card('${word}','${title}')">삭제</button>
                 </footer></div>`;
-            console.log('work');
-            console.log(title);
-            console.log(word);
+
             // let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
             //     <div class="card-header">
             //         <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
@@ -228,7 +222,7 @@
             if (window.event.keyCode == 13) {
                 make_word()
             }
-        };
+        }
 
         // $('#input_word').empty();
         // <button class="card_btn" onclick="location.href='http://endic.naver.com/search.nhn?query= + ${word}'">상세</button>
@@ -295,55 +289,42 @@
 
         }
 
-        function MEMO() {
-
-            $.ajax({
-                type: 'POST',
-                url: '/MEMO',
-                data: { contents_give: contents },
-                success: function (response) {
-        
+        function openclose() {          
+            let status = $('#popupmemo').css('visibility');
+            
+            if (status == 'hidden') {
+                $('#popupmemo').css('visibility', 'visible')
+                $('#btn_memo').text('메모끄기')
+                   
+            } else {
+                $('#popupmemo').css('visibility', 'hidden')
+                $('#btn_memo').text('메모')
                 }
-            })
-        }
-
-        // function openclose() {
-        //     let status = $('#post-box').css('display');
-        //     if (status == 'block') {
-        //         $('#post-box').hide()
-        //         $('#posting-box-btn').text('포스팅박스 열기')
-        //     } else {
-        //         $('#post-box').show()
-        //         $('#posting-box-btn').text('포스팅박스 닫기')
-        //     }
-        // }
-
-
-
-
+          }
     </script>
 
 </head>
 
 
 <body>
+    <div id="bodyframe" style="visibility:hidden;" >
+        <iframe id="popupmemo" src="/iframe" style="width:100%; height:250px; position:fixed; z-index: 9999;"></iframe>
+  
+    </div>
+
     <div class="head">
-
         <div class="menubar">
-
             <h1 type="button" onclick="location.href='/'" style="cursor:pointer">My Word</h1>
             <div class="menu">
                 <button onclick="EXCEL()">다운로드</button></li>
-                <button onclick="memo()"">메모</button></li>
-                <!-- <iframe src="https://www.everdevel.com" style="width:90%" height="500" scrolling="auto">
-                </iframe> -->
+                <button id="btn_memo" onclick="openclose()">메모</button></li>
                 <button onclick=" save_title()">저장</button></li>
-
-                <!-- "alert('단어장이 발행되었습니다 :D')"">발행</button></li> -->
-                <!-- <button type="button" class="navyBtn" onClick="location.href='PAGENAME.html'"></button> -->
-
+        
             </div>
+
+           
         </div>
+        
 
         <div class="input">
 
@@ -353,6 +334,7 @@
                 <button class="btn" type="button" onclick="make_word()">등록</button></p>
         </div>
     </div>
+
 
 
     <div id="cards_box" class="wrapper_2">
@@ -372,6 +354,9 @@
         </div>
 
     </div>
+
+
+
 
 
 </body>
