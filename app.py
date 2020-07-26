@@ -3,12 +3,13 @@ from bs4 import BeautifulSoup
 import requests
 from openpyxl import load_workbook
 from flask import Flask, render_template, jsonify, request
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 # 크롤링
 
 # 파이몽고
 client = MongoClient('localhost', 27017)
+# client = MongoClient('mongodb://test:test@localhost', 27017)
 db = client.dbsparta
 
 
@@ -19,16 +20,29 @@ def home():
 
 # API 역할을 하는 부분
 
+@app.route('/plus', methods=['POST'])
+def plus():
+    word_receive = request.form['word_give']
+    title_receive = request.form['title_give']
+    plus_receive =request.form['plus_give']
+    
+    db.wordcards.update_one({'word':word_receive,'title':title_receive},{'$set': {'plus':plus_receive}})
+
+    return jsonify({'result': 'success', 'msg': '등록완료!'})
+
+
 
 @app.route('/word', methods=['POST'])
 def make_word():
     word_receive = request.form['word_give']
     title_receive = request.form['title_give']
+    plus_receive = request.form['plus_give']
+    
     url = "http://endic.naver.com/search.nhn?query=" + word_receive
     data = requests.get(url)
     soup = BeautifulSoup(data.text, 'html.parser')
 
-    print(url)
+    # print(data.text)
 
     result=""
 
@@ -42,7 +56,9 @@ def make_word():
     doc = {
         'title': title_receive,
         'word': word_receive,
-        'meaning': result
+        'meaning': result,
+        'plus':plus_receive
+        
     }
 
     db.wordcards.insert_one(doc)
@@ -77,17 +93,11 @@ def savetitle():
 # def edit():
 #     return jsonify({'result': 'success', 'msg': '수정되었습니다.'})
 
-# # 엑셀화
-
 
 @app.route('/excel', methods=['POST'])
 def excel():
     print('excel')
     title_receive = request.form['title_give']
-    # word_receive = request.form['word_give']
-    # meaning_receive = request.form['meaning_give']
-    # print(title_receive)
-
     cards = list(db.wordcards.find({'title': title_receive}, {'_id': 0}))
     # print(cards)
   
@@ -103,37 +113,32 @@ def excel():
         
         work_book.save('test.xlsx')
         
-    return jsonify({'result': 'success', 'msg': '로딩완료'})
+    return jsonify({'result': 'success', 'msg': '엑셀파일을 확인해보세요.'})
 
 
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<MAIN.HTML화면 연결하기
 @app.route('/listpage')
-def wordlist():
+def makenew():
     return render_template('index.html')
 
-
 @app.route('/listpage2')
-def wordlist2():
+def wordlist():
     pagetitle = request.args.get('pagetitle')
     pagetitle = pagetitle.replace("'", "")
-   
     return render_template('index2.html', pagetitle=pagetitle)
 
 
 @app.route('/folderlist', methods=['GET'])
 def folderlist():
     folderlists = db.wordcards.distinct("title")
-    print(folderlists)
     return jsonify({'result': 'success', 'folderlists': folderlists})
 
 
-@app.route('/deletefolder', methods=['get'])
-def deletefoler():
-    pagetitle = request.args.get('pagetitle')
-    pagetitle = pagetitle.replace("'", "")
-    db.wordcards.delete_many({'title': pagetitle})
+@app.route('/deletefolder', methods=['POST'])
+def deletefolder():
+    foldertitle_receive = request.form('foldertitle_give') 
+    db.wordcards.deleteMany({'title': foldertitle_receive})
     return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
-
 
 
 if __name__ == '__main__':

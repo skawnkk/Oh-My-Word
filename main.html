@@ -24,6 +24,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
     <!-- 추가 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+ 
 
     <meta property="og:title" content="OH_My_Word!" />
     <meta property="og:description" content="쉽고 빠르게 만드는 영어단어장" />
@@ -124,14 +126,14 @@
 
     function make_folder(foldertitle) {
 
-        let temp_html =  `<div class="list-group-item list-group-item-action">
-                    <a id="${foldertitle}">${foldertitle}</a>
-                        <div style="float:right; margin-right: 20px">
-                            <a href="/listpage2?pagetitle='${foldertitle}'" style="padding-right: 10px;">EDIT</a>
-                            <a type="text" style="color:#007BFF; cursor: pointer;"
+        let temp_html = `<div class="list-group-item list-group-item-action">
+                            ${foldertitle}
+                            <div style="float:right; margin-right: 20px">
+                                <a href="/listpage2?pagetitle='${foldertitle}'" style="padding-right: 10px;">EDIT</a>
+                                <a type="text" style="color:#007BFF; cursor: pointer;"
                                 onclick="deletefolder('${foldertitle}')">DELETE</a>
-                        </div>
-                </div>`
+                            </div>
+                        </div>`
 
         $('#list').append(temp_html);
     }
@@ -141,37 +143,19 @@
         window.location.href('/listpage');
     }
 
-
-    function make_card(word, meaning) {
-        let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-                    <div class="card-header">
-                        <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">${meaning}</h5>
-                        <p class="card-text">단어가 사용된 예문 2가지</p>
-                    </div>
-                    <footer class="array">
-                        <button class="card_btn">편집</button>
-                        <button class="card_btn" onclick="delete_card(${word})">삭제</button>
-                    </footer></div>`;
-        $('#cards_box').append(temp_html);
-    }
-
     function deletefolder(foldertitle) {
-
-        console.log('delete')
+        console.log('are you?')
         console.log(foldertitle)
 
         $.ajax({
-
             type: 'POST',
             url: '/deletefolder',
-            data: { foldertitle_give: foldertitle },
+            data: {foldertitle_give: foldertitle},
             success: function (response) {
-                if (response['result'] == 'success') {
 
-                    alert('success')
+                if (response['result'] == 'success') {
+                    console.log('are you?2')
+                    alert(msg)
                     folderlist();
                 }
             }
@@ -192,22 +176,7 @@
         <div class="list">
             <div class="list-group">
                 <p id="list"></p>
-
-                <!-- <div class="list-group-item list-group-item-action">
-                    <a id="${foldertitle}">${foldertitle}</a>
-                        <div style="float:right; margin-right: 20px">
-                            <a href="/listpage2?pagetitle='${foldertitle}'" style="padding-right: 10px;">EDIT</a>
-                            <a type="text" style="color:#007BFF; cursor: pointer;"
-                                onclick="deletefolder('${foldertitle}')">DELETE</a>
-                        </div>
-                </div> -->
-
-
-
-
-
             </div>
-
         </div>
     </div>
 
@@ -215,9 +184,8 @@
     <div class="footer">
         <div style="text-align: center; margin:0px 300px;">
             <a href="/listpage" type="button" class="footer_btn">MAKE_NEW</a>
-                   </div>
+        </div>
     </div>
-
 
 </body>
 

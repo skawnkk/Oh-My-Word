@@ -130,14 +130,12 @@
     <script>
         $(document).ready(function () {
             $('#cards_box').html('')
-            // TODO
             let title = $('#input_title').text()
             readWord(title);
-            // readWord('1');
         });
 
         function readWord(title) {
-    
+
             $('#cards_box').html('');
 
             $.ajax({
@@ -153,7 +151,9 @@
                         for (let i = 0; i < wordcard.length; i++) {
                             let word = wordcard[i]['word'];
                             let meaning = wordcard[i]['meaning'];
-                            make_card(word, meaning, title)
+                            let plus = wordcard[i]['plus'];
+
+                            make_card(word, meaning, plus, title)
                         }
                     }
                     else {
@@ -163,41 +163,47 @@
             })
         }
 
-        function make_card(word, meaning, title) {
+        function make_card(word, meaning, plus, title) {
 
-            let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            let temp_html = `<div id="card_form(${word})" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
                 <div class="card-header">
                     <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">${meaning}</h5>
-                  
+                    <p id="plus-text(${word})">${plus}</p>
                 </div>
                 <footer class="array">
-                    <button class="card_btn">편집</button>
+                    <button class="card_btn" onclick="plus('${word}','${plus}','${title}')">편집</button>
                     <button class="card_btn" onclick="delete_card('${word}','${title}')">삭제</button>
                 </footer></div>`;
-
-            // let temp_html = `<div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-            //     <div class="card-header">
-            //         <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
-            //     </div>
-            //     <div class="card-body">
-            //         <h5 class="card-title">${meaning}</h5>
-            //         <p class="card-text">단어가 사용된 예문 2가지</p>
-            //     </div>
-            //     <footer class="array">
-            //         <button class="card_btn">편집</button>
-            //         <button class="card_btn" onclick="delete_card(${word})">삭제</button>
-            //     </footer></div>`;
 
             $('#cards_box').append(temp_html);
 
         }
 
+        function plus(word, meaning, title) {
+            let plus = prompt('메모입력하기');
+            console.log(plus)
+
+            $.ajax({
+                type: 'POST',
+                url: '/plus',
+                data: { plus_give: plus, word_give: word, title_give: title, meaning_give: meaning },
+                success: function (response) {
+                    console.log('good')
+                    if (response['result'] == 'success') {
+                        $('#plus-text(${word})').replacewith(plus_give)
+                    }
+                }
+            })
+            window.location.reload()
+        }
+
         function make_word() {
             let word = $('#input_word').val();
             let title = $('#input_title').text();
+            let plus = $('input_plus').text();
             console.log(title)
             console.log(word)
 
@@ -207,11 +213,11 @@
                 $.ajax({
                     type: 'POST',
                     url: '/word',
-                    data: { word_give: word, title_give: title },
+                    data: { word_give: word, title_give: title, plus_give: plus },
                     success: function (response) {
                         console.log('good')
                         if (response['result'] == 'success') {
-                            readWord('')
+                            readWord(title)
                         }
                     }
                 })
@@ -229,8 +235,6 @@
         // 새로고침도하고..마지막 단어로 포커스이동
 
         function delete_card(word, title) {
-            // title = $('#input_title').text()
-
 
             $.ajax({
                 type: 'POST',
@@ -239,36 +243,31 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         alert('삭제완료');
-                        readWord();
+                        readWord(title);
                     }
                 }
             })
         }
 
-        function edit_card(word) {
-            $.ajax({
-                type: 'POST',
-                url: '/changecard',
-                data: {},
-                success: function (response) {
-                    let msg = response['msg'];
-                    alert(msg);
-                }
-            });
-        }
-
         function save_title() {
-            let title = prompt('제목을 꼭 입력해주세요');
-            $('#input_title').append(title);
 
-            $.ajax({
-                type: 'POST',
-                url: '/savetitle',
-                data: { title_give: title },
-                success: function (response) {
-                    location.href = '/'
-                }
-            })
+            if ($('#input_title') == '') {
+                let title = prompt('제목을 꼭 입력해주세요');
+                $('#input_title').append(title);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/savetitle',
+                    data: { title_give: title },
+                    success: function (response) {
+                        location.href = '/'
+                    }
+                })
+            }
+            else {
+                location.href = '/'
+            }
+
         }
 
         function EXCEL() {
@@ -283,48 +282,31 @@
                 url: '/excel',
                 data: { word_give: word, meaning_give: meaning, title_give: title },
                 success: function (response) {
-                    alert(msg)
+                    alert('엑셀파일을 확인해 보세요.')
                 }
             })
 
         }
 
-        function openclose() {          
-            let status = $('#popupmemo').css('visibility');
-            
-            if (status == 'hidden') {
-                $('#popupmemo').css('visibility', 'visible')
-                $('#btn_memo').text('메모끄기')
-                   
-            } else {
-                $('#popupmemo').css('visibility', 'hidden')
-                $('#btn_memo').text('메모')
-                }
-          }
     </script>
 
 </head>
 
 
 <body>
-    <div id="bodyframe" style="visibility:hidden;" >
-        <iframe id="popupmemo" src="/iframe" style="width:100%; height:250px; position:fixed; z-index: 9999;"></iframe>
-  
-    </div>
 
     <div class="head">
         <div class="menubar">
             <h1 type="button" onclick="location.href='/'" style="cursor:pointer">My Word</h1>
             <div class="menu">
                 <button onclick="EXCEL()">다운로드</button></li>
-                <button id="btn_memo" onclick="openclose()">메모</button></li>
                 <button onclick=" save_title()">저장</button></li>
-        
+
             </div>
 
-           
+
         </div>
-        
+
 
         <div class="input">
 
@@ -334,28 +316,6 @@
                 <button class="btn" type="button" onclick="make_word()">등록</button></p>
         </div>
     </div>
-
-
-
-    <div id="cards_box" class="wrapper_2">
-
-        <div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-            <div class="card-header">
-                <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">${meaning}</h5>
-                <p class="card-text">단어가 사용된 예문 2가지</p>
-            </div>
-            <footer class="array">
-                <button class="card_btn">편집</button>
-                <button class="card_btn" onclick="delete_card();">삭제</button>
-            </footer>
-        </div>
-
-    </div>
-
-
 
 
 
