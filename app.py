@@ -13,6 +13,8 @@ client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
 
+
+
 # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<INDEX HTML을 주는 부분
 @app.route('/')
 def home():
@@ -89,10 +91,6 @@ def savetitle():
     db.wordcards.update_many({'title': ''}, {'$set': {'title': title_receive}})
     return jsonify({'result': 'success'})
 
-# @app.route('/changecard', methods=['post'])
-# def edit():
-#     return jsonify({'result': 'success', 'msg': '수정되었습니다.'})
-
 
 @app.route('/excel', methods=['POST'])
 def excel():
@@ -136,8 +134,9 @@ def folderlist():
 
 @app.route('/deletefolder', methods=['POST'])
 def deletefolder():
+  
     foldertitle_receive = request.form('foldertitle_give') 
-    db.wordcards.deleteMany({'title': foldertitle_receive})
+    db.wordcards.deleteMany({'title':foldertitle_receive},{'_id':0})
     return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
 
 

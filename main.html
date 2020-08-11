@@ -25,7 +25,7 @@
     <!-- 추가 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
- 
+
 
     <meta property="og:title" content="OH_My_Word!" />
     <meta property="og:description" content="쉽고 빠르게 만드는 영어단어장" />
@@ -38,62 +38,58 @@
         background-color: #FAFAFA;
         font-family: 'Nanum Gothic', sans-serif;
         width: 100%;
-        height: 100vh;
+        height: 10vh;
         overflow: hidden;
     }
 
-    .left {
-        float: left;
-        width: 30%;
+
+
+
+    .list {
+        width: 40vw;
+        height: 62vh;
+        overflow: scroll;
+        overflow-x: hidden;
+        margin: auto;
     }
 
-    .right {
-        float: right;
-        width: 70%;
+    h1 {
+        text-align: center;
+        font-family: 'Gugi', cursive;
+        margin-top: 10vh;
+        margin-bottom: 6vh;
+        color: #857B7B;
     }
 
     .footer {
         position: fixed;
+        text-align: center;
         margin-bottom: 0;
         bottom: 0;
         width: 100%;
-        height: 70px;
+        height: 7vh;
         background-color: #007BFF;
 
-    }
-
-    .list {
-        width: 700px;
-        height: 620px;
-        overflow: scroll;
-        overflow-x: hidden;
-        margin-top: 50px;
-        margin-bottom: 100px;
-        margin-left: 20px;
-    }
-
-    h1 {
-        font-family: 'Gugi', cursive;
-        line-height: 75px;
-        float: right;
-        margin-top: 300px;
-        margin-right: 50px;
-        color: #857B7B;
     }
 
     .footer_btn {
         color: #FAFAFA;
         font-weight: bolder;
         font-size: larger;
-        background-color: #007bff;
         border: none;
-        margin-top: 20px;
+        margin-top: 2vh;
         cursor: pointer;
     }
 
-    .folder_btn {
-        color: #007BFF;
-        cursor: pointer;
+    @media (max-width: 600px) {
+        .list {
+            width: 80vw;
+            margin: auto;
+        }
+
+        a {
+            font-size: smaller;
+        }
     }
 </style>
 
@@ -127,64 +123,63 @@
     function make_folder(foldertitle) {
 
         let temp_html = `<div class="list-group-item list-group-item-action">
-                            ${foldertitle}
-                            <div style="float:right; margin-right: 20px">
-                                <a href="/listpage2?pagetitle='${foldertitle}'" style="padding-right: 10px;">EDIT</a>
-                                <a type="text" style="color:#007BFF; cursor: pointer;"
-                                onclick="deletefolder('${foldertitle}')">DELETE</a>
-                            </div>
-                        </div>`
-
+                            <a href="/listpage2?pagetitle='${foldertitle}'" style="color:black; padding-right: 10px;">${foldertitle}</a>
+                            <a type="text" style="color:#007BFF; cursor: pointer; float:right; margin-right: 20px"
+                            onclick="deletefolder('${foldertitle}')">DELETE</a></div>`
         $('#list').append(temp_html);
     }
-
 
     function make_new() {
         window.location.href('/listpage');
     }
 
     function deletefolder(foldertitle) {
-        console.log('are you?')
+
         console.log(foldertitle)
-
-        $.ajax({
-            type: 'POST',
-            url: '/deletefolder',
-            data: {foldertitle_give: foldertitle},
-            success: function (response) {
-
-                if (response['result'] == 'success') {
-                    console.log('are you?2')
+        let result = confirm("단어장을 삭제하시겠어요'ㅅ'?");
+  
+        if (result == false) {
+            return
+            } 
+            else {
+            $.ajax({
+                type: 'POST',
+                url: '/deletefolder',
+                data: {foldertitle_give: foldertitle},
+                success: function (response) {
+                    console.log('are you?')
                     alert(msg)
                     folderlist();
                 }
-            }
-        })
+            })  
+        }
     }
+
 
 </script>
 
 <body>
-    <div class="left">
-        <h1>Oh, My Word !</h1>
 
-    </div>
+    <h1>Oh, My Word !</h1>
 
 
-
-    <div class="right">
-        <div class="list">
-            <div class="list-group">
-                <p id="list"></p>
+    <div class="list">
+        <div class="list-group">
+            <p id="list">
+            <div class="list-group-item list-group-item-action">
+                <a href="/listpage2?pagetitle='${foldertitle}'" style="color:black; padding-right: 10px;">
+                    foldertitle</a>
+                <a type="text" style="color:#007BFF; cursor: pointer; float:right; margin-right: 20px"
+                    onclick="deletefolder('${foldertitle}')">DELETE</a>
             </div>
+            </p>
         </div>
+    </div>
     </div>
 
 
     <div class="footer">
-        <div style="text-align: center; margin:0px 300px;">
-            <a href="/listpage" type="button" class="footer_btn">MAKE_NEW</a>
-        </div>
+        <a href="/listpage" type="button" class="footer_btn">MAKE_NEW</a> </div>
     </div>
 
 </body>

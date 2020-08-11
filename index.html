@@ -38,7 +38,7 @@
         }
 
         .head {
-            height: 200px;
+            height: 20vh;
             background-color: #FAFAFA;
             color: rgb(133, 123, 123);
             border: 1px solid rgb(201, 197, 197);
@@ -50,33 +50,30 @@
 
         h1 {
             font-family: 'Gugi', cursive;
-            line-height: 75px;
+            line-height: 8vh;
             float: left;
-        }
-
-        .menu {
-            float: right;
         }
 
         .menu button {
-            float: left;
-            line-height: 75px;
+            float: right;
+            line-height: 8vh;
             background-color: #FAFAFA;
             border: none;
-            padding: 0 15px;
+            padding: 0 1.5vw;
             cursor: pointer;
         }
 
         .input {
-            margin-top: 75px;
-            margin-left: 500px;
+            margin-top: 8vh;
+            margin-left: 35vw;
+            font-weight: bolder;
+            font-size: x-large;
         }
 
-        .input_st {
-            margin: 10px;
-            width: 400px;
-            font-size: large;
-            font-weight: bolder;
+        .input_st2 {
+            margin-top: 1vh;
+            width: 20vw;
+            text-align: center;
             background-color: #fafafa;
             border-top: none;
             border-left: none;
@@ -94,20 +91,20 @@
         }
 
         .array {
-            margin-left: 215px;
-            margin-bottom: 5px;
-            margin-right: 5px;
+            margin: 1vh;
         }
 
         .card_btn {
+            font-weight: bold;
+            float: right;
+            margin-right: 1em;
             background-color: white;
             color: #007bff;
             opacity: 0.8;
-            border-radius: 5px;
-            border-width: 1px;
-            border-color: #007bff;
+            border: none;
+            border-radius: 0.5em;
             font-size: xx-small;
-            width: 30px;
+            width: 35px;
             height: 30px;
             padding: 2px 5px;
         }
@@ -117,13 +114,53 @@
             margin: 0 auto;
         }
 
-        .wrapper_2 {
-            margin-top: 250px;
+        #cards_box {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-            grid-template-rows: 300px 300px 300px 300px;
-            grid-gap: 10px;
-            margin-left: 10px;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            grid-gap: 1vw;
+            margin: 20vh 1vw;
+        }
+
+
+
+        @media (max-width: 800px) {
+            #cards_box {
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-gap: 0.1vw;
+                margin: 20vh 2vw;
+            }
+
+            .input {
+                font-weight: bolder;
+                font-size: large;
+                margin-left: 15vw;
+            }
+
+            .input_st {
+                font-weight: bolder;
+                /* font-size: small; */
+                margin-left: 10vw;
+                margin-bottom: 0;
+            }
+
+            .input_st2 {
+                width: 200px;
+            }
+
+            h1 {
+                font-size: x-large;
+                margin-left: 1vw;
+            }
+
+            .menu button {
+                float: left;
+            }
+
+            #btn1 {
+                margin-left: 120px;
+            }
+
         }
     </style>
 
@@ -174,7 +211,8 @@
                     <p id="plus-text(${word})">${plus}</p>
                 </div>
                 <footer class="array">
-                    <button class="card_btn" onclick="plus('${word}','${plus}','${title}')">편집</button>
+                    <button class="card_btn" onclick="plus('${word}','${plus}','${title}')">추가</button>
+                    <button class="card_btn" onclick="location.href='http://endic.naver.com/search.nhn?query= + ${word}'" target="blank">이동</button>
                     <button class="card_btn" onclick="delete_card('${word}','${title}')">삭제</button>
                 </footer></div>`;
 
@@ -251,24 +289,19 @@
 
         function save_title() {
 
-            if ($('#input_title') == '') {
-                let title = prompt('제목을 꼭 입력해주세요');
-                $('#input_title').append(title);
+            let title = prompt('제목을 꼭 입력해주세요');
+            $('#input_title').append(title);
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/savetitle',
-                    data: { title_give: title },
-                    success: function (response) {
-                        location.href = '/'
-                    }
-                })
-            }
-            else {
-                location.href = '/'
-            }
-
+            $.ajax({
+                type: 'POST',
+                url: '/savetitle',
+                data: { title_give: title },
+                success: function (response) {
+                    location.href = '/'
+                }
+            })
         }
+
 
         function EXCEL() {
 
@@ -299,25 +332,36 @@
         <div class="menubar">
             <h1 type="button" onclick="location.href='/'" style="cursor:pointer">My Word</h1>
             <div class="menu">
-                <button onclick="EXCEL()">다운로드</button></li>
-                <button onclick=" save_title()">저장</button></li>
-
+                <button id="btn1" onclick=save_title()>저장</button>
+                <button id="btn2" onclick="EXCEL()">다운로드</button>
             </div>
-
-
         </div>
 
-
         <div class="input">
-
-            <p><text id="input_title" class="input_st" type="text"
-                    placeholder="________________________________________">{{pagetitle}}</text></p>
-            <p><input id="input_word" class="input_st" onkeyup="enterkey();" type="text" placeholder="영어 단어 입력"></input>
-                <button class="btn" type="button" onclick="make_word()">등록</button></p>
+            '-'♥ 단어를 검색해봐! <p id="input_title" class="input_st" type="text">{{pagetitle}}</p>
+            <div><input id="input_word" class="input_st2" onkeyup="enterkey();" type="text"
+                    placeholder="영어 단어 입력"></input>
+                <button class="btn" type="button" onclick="make_word()">등록</button></div>
         </div>
     </div>
 
+    <div id="cards_box">
 
+        <div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <span id="word">${word}</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">${meaning}</h5>
+                <p class="card-text">단어가 사용된 예문 2가지</p>
+            </div>
+            <footer class="array">
+                <button class="card_btn">추가</button>
+                <button class="card_btn" onclick="delete_card('${word}','${title}');">삭제</button>
+            </footer>
+        </div>
+
+    </div>
 
 </body>
 
