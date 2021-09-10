@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+    <!-- 추가 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+
+    <meta property="og:title" content="OH_My_Word!" />
+    <meta property="og:description" content="쉽고 빠르게 만드는 영어단어장" />
+    <meta property="og:image" content="{{ url_for('static', filename='og.jpg') }}" />
+
+</head>
+
+<style>
+    body {
+        background-color: #FAFAFA;
+        font-family: 'Nanum Gothic', sans-serif;
+        width: 100%;
+        height: 10vh;
+        overflow: hidden;
+    }
+
+
+
+
+    .list {
+        width: 40vw;
+        height: 62vh;
+        overflow: scroll;
+        overflow-x: hidden;
+        margin: auto;
+    }
+
+    h1 {
+        text-align: center;
+        font-family: 'Gugi', cursive;
+        margin-top: 10vh;
+        margin-bottom: 6vh;
+        color: #857B7B;
+    }
+
+    .footer {
+        position: fixed;
+        text-align: center;
+        margin-bottom: 0;
+        bottom: 0;
+        width: 100%;
+        height: 7vh;
+        background-color: #007BFF;
+
+    }
+
+    .footer_btn {
+        color: #FAFAFA;
+        font-weight: bolder;
+        font-size: larger;
+        border: none;
+        margin-top: 2vh;
+        cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+        .list {
+            width: 80vw;
+            margin: auto;
+        }
+
+        a {
+            font-size: smaller;
+        }
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+        folderlist()
+    });
+
+    function folderlist() {
+
+        $.ajax({
+            type: "GET",
+            url: "/folderlist",
+            data: {},
+            success: function (response) {
+                if (response['result'] == 'success') {
+
+                    let folderlists = response['folderlists'];
+                    for (let i = 0; i < folderlists.length; i++) {
+                        let foldertitle = folderlists[i];
+
+                        make_folder(foldertitle)
+                    }
+                }
+            }
+        })
+    }
+
+
+    function make_folder(foldertitle) {
+
+        let temp_html = `<div class="list-group-item list-group-item-action">
+                            <a href="/listpage2?pagetitle='${foldertitle}'" style="color:black; padding-right: 10px;">${foldertitle}</a>
+                            <a type="text" style="color:#007BFF; cursor: pointer; float:right; margin-right: 20px"
+                            onclick="deletefolder('${foldertitle}')">DELETE</a></div>`
+        $('#list').append(temp_html);
+    }
+
+    function make_new() {
+        window.location.href('/listpage');
+    }
+
+    function deletefolder(foldertitle) {
+
+        console.log(foldertitle)
+        let result = confirm("단어장을 삭제하시겠어요'ㅅ'?");
+  
+        if (result == false) {
+            return
+            } 
+            else {
+            $.ajax({
+                type: 'POST',
+                url: '/deletefolder',
+                data: {foldertitle_give: foldertitle},
+                success: function (response) {
+                    console.log('are you?')
+                    alert(msg)
+                    folderlist();
+                }
+            })  
+        }
+    }
+
+
+</script>
+
+<body>
+
+    <h1>Oh, My Word !</h1>
+
+
+    <div class="list">
+        <div class="list-group">
+            <p id="list">
+            <!-- <div class="list-group-item list-group-item-action">
+                <a href="/listpage2?pagetitle='${foldertitle}'" style="color:black; padding-right: 10px;">
+                    foldertitle</a>
+                <a type="text" style="color:#007BFF; cursor: pointer; float:right; margin-right: 20px"
+                    onclick="deletefolder('${foldertitle}')">DELETE</a>
+            </div> -->
+            </p>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="footer">
+        <a href="/listpage" type="button" class="footer_btn">MAKE_NEW</a> </div>
+    </div>
+
+</body>
+
+</html>

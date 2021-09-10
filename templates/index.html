@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Gugi&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+
+    <meta property="og:title" content="OH_My_Word!" />
+    <meta property="og:description" content="쉽고 빠르게 만드는 영어단어장" />
+    <meta property="og:image" content="{{ url_for('static', filename='og.jpg') }}" />
+
+
+    <title>MY_WORDS</title>
+
+    <style>
+        body {
+            background-color: #FAFAFA;
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        .head {
+            height: 20vh;
+            background-color: #FAFAFA;
+            color: rgb(133, 123, 123);
+            border: 1px solid rgb(201, 197, 197);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 9999;
+        }
+
+        h1 {
+            font-family: 'Gugi', cursive;
+            line-height: 8vh;
+            float: left;
+        }
+
+        .menu button {
+            float: right;
+            line-height: 8vh;
+            background-color: #FAFAFA;
+            border: none;
+            padding: 0 1.5vw;
+            cursor: pointer;
+        }
+
+        .input {
+            margin-top: 8vh;
+            margin-left: 35vw;
+            font-weight: bolder;
+            font-size: x-large;
+        }
+
+        .input_st2 {
+            margin-top: 1vh;
+            width: 20vw;
+            text-align: center;
+            background-color: #fafafa;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom-color: rgb(201, 197, 197);
+            border-width: 1px;
+        }
+
+        .btn {
+            background-color: rgb(201, 197, 197);
+            border-radius: 5px;
+            border-color: rgb(201, 197, 197);
+            font-size: smaller;
+            padding: 5px 10px;
+        }
+
+        .array {
+            margin: 1vh;
+        }
+
+        .card_btn {
+            font-weight: bold;
+            float: right;
+            margin-right: 1em;
+            background-color: white;
+            color: #007bff;
+            opacity: 0.8;
+            border: none;
+            border-radius: 0.5em;
+            font-size: xx-small;
+            width: 35px;
+            height: 30px;
+            padding: 2px 5px;
+        }
+
+        .menubar {
+            width: 1170px;
+            margin: 0 auto;
+        }
+
+        #cards_box {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            grid-gap: 1vw;
+            margin: 20vh 1vw;
+        }
+
+
+
+        @media (max-width: 800px) {
+            #cards_box {
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-gap: 0.1vw;
+                margin: 20vh 2vw;
+            }
+
+            .input {
+                font-weight: bolder;
+                font-size: large;
+                margin-left: 15vw;
+            }
+
+            .input_st {
+                font-weight: bolder;
+                /* font-size: small; */
+                margin-left: 10vw;
+                margin-bottom: 0;
+            }
+
+            .input_st2 {
+                width: 200px;
+            }
+
+            h1 {
+                font-size: x-large;
+                margin-left: 1vw;
+            }
+
+            .menu button {
+                float: left;
+            }
+
+            #btn1 {
+                margin-left: 120px;
+            }
+
+        }
+    </style>
+
+    <script>
+        
+        $(document).ready(function () {
+            $('#cards_box').html('')
+            let title = $('#input_title').text()
+            readWord(title);
+        });
+
+        function readWord(title) {
+
+            $('#cards_box').html('');
+
+            $.ajax({
+                type: "GET",
+                url: "/card" + "?title=" + title,
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        let wordcard = response['wordcards'];
+
+                        // console.log(title)
+
+                        for (let i = 0; i < wordcard.length; i++) {
+                            let word = wordcard[i]['word'];
+                            let meaning = wordcard[i]['meaning'];
+                            let plus = wordcard[i]['plus'];
+
+                            make_card(word, meaning, plus, title)
+                        }
+                    }
+                    else {
+                        alert('불러오기 오류');
+                    }
+                }
+            })
+        }
+
+        function make_card(word, meaning, plus, title) {
+
+            let temp_html = `<div id="card_form(${word})" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+                <div class="card-header">
+                    <span id="word" style="font-size:xx-large; font-weight:bold">${word}</span>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">${meaning}</h5>
+                    <p id="plus-text(${word})">${plus}</p>
+                </div>
+                <footer class="array">
+                    <button class="card_btn" onclick="plus('${word}','${plus}','${title}')">추가</button>
+                    <button class="card_btn" onclick="location.href='http://endic.naver.com/search.nhn?query= + ${word}'" target="blank">이동</button>
+                    <button class="card_btn" onclick="delete_card('${word}','${title}')">삭제</button>
+                </footer></div>`;
+
+            $('#cards_box').append(temp_html);
+
+        }
+
+        function plus(word, meaning, title) {
+            let plus = prompt('메모입력하기');
+            console.log(plus)
+
+            $.ajax({
+                type: 'POST',
+                url: '/plus',
+                data: { plus_give: plus, word_give: word, title_give: title, meaning_give: meaning },
+                success: function (response) {
+                    console.log('good')
+                    if (response['result'] == 'success') {
+                        $('#plus-text(${word})').replacewith(plus_give)
+                    }
+                }
+            })
+            window.location.reload()
+        }
+
+        function make_word() {
+            let word = $('#input_word').val();
+            let title = $('#input_title').text();
+            let plus = $('input_plus').text();
+            console.log(title)
+            console.log(word)
+
+            if (word == '') {
+                alert('영단어를 입력하세요');
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/word',
+                    data: { word_give: word, title_give: title, plus_give: plus },
+                    success: function (response) {
+                        console.log('good')
+                        if (response['result'] == 'success') {
+                            readWord(title)
+                        }
+                    }
+                })
+            }
+        }   
+
+        function enterkey() {
+            if (window.event.keyCode == 13) {
+                make_word()
+            }
+        }
+
+        // $('#input_word').empty();
+        // <button class="card_btn" onclick="location.href='http://endic.naver.com/search.nhn?query= + ${word}'">상세</button>
+        // 새로고침도하고..마지막 단어로 포커스이동
+
+        function delete_card(word, title) {
+
+            $.ajax({
+                type: 'POST',
+                url: '/nocard',
+                data: { word_give: word, title_give: title },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert('삭제완료');
+                        readWord(title);
+                    }
+                }
+            })
+        }
+
+        function save_title() {
+
+            let title = prompt('제목을 꼭 입력해주세요');
+            $('#input_title').append(title);
+
+            $.ajax({
+                type: 'POST',
+                url: '/savetitle',
+                data: { title_give: title },
+                success: function (response) {
+                    location.href = '/'
+                }
+            })
+        }
+
+
+        function EXCEL() {
+
+            let word = $('#word').text();
+            let meaning = $('#meaning').text();
+            let title = $('#input_title').text();
+
+
+            $.ajax({
+                type: 'POST',
+                url: '/excel',
+                data: { word_give: word, meaning_give: meaning, title_give: title },
+                success: function (response) {
+                    alert('엑셀파일을 확인해 보세요.')
+                }
+            })
+
+        }
+
+    </script>
+
+</head>
+
+
+<body>
+
+    <div class="head">
+        <div class="menubar">
+            <h1 type="button" onclick="location.href='/'" style="cursor:pointer">My Word</h1>
+            <div class="menu">
+                <button id="btn1" onclick=save_title()>저장</button>
+                <button id="btn2" onclick="EXCEL()">다운로드</button>
+            </div>
+        </div>
+
+        <div class="input">
+            '-'♥ 단어를 검색해봐! <p id="input_title" class="input_st" type="text">{{pagetitle}}</p>
+            <div><input id="input_word" class="input_st2" onkeyup="enterkey();" type="text"
+                    placeholder="영어 단어 입력"></input>
+                <button class="btn" type="button" onclick="make_word()">등록</button></div>
+        </div>
+    </div>
+
+    <div id="cards_box">
+
+        <div id="card_form" class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <span id="word">${word}</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">${meaning}</h5>
+                <p class="card-text">단어가 사용된 예문 2가지</p>
+            </div>
+            <footer class="array">
+                <button class="card_btn">추가</button>
+                <button class="card_btn" onclick="delete_card('${word}','${title}');">삭제</button>
+            </footer>
+        </div>
+
+    </div>
+    
+
+</body>
+
+</html>
