@@ -10,3 +10,6 @@
 
 🙈[제작후기-1](https://blog.naver.com/namju1v/222018863139)  
 🙉[제작후기-2](https://blog.naver.com/namju1v/222068346912)
+
+- 기술스택
+`JavaScript` `Python` `Flask` `MongoDB` `HTML` 
