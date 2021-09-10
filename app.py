@@ -97,7 +97,7 @@ def excel():
     print('excel')
     title_receive = request.form['title_give']
     cards = list(db.wordcards.find({'title': title_receive}, {'_id': 0}))
-    # print(cards)
+
   
     work_book = load_workbook('test.xlsx')
     work_sheet = work_book['prac']
@@ -136,7 +136,7 @@ def folderlist():
 def deletefolder():
   
     foldertitle_receive = request.form('foldertitle_give') 
-    db.wordcards.deleteMany({'title':foldertitle_receive},{'_id':0})
+    db.wordcards.deleteMany({'title':foldertitle_receive})
     return jsonify({'result': 'success', 'msg': '삭제되었습니다.'})
 
 
