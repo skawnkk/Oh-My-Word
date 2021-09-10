@@ -1,5 +1,6 @@
 # OH MY WORD!
-
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/65053955/132803835-d92b4590-13e5-4817-9ace-d81a303a5182.gif)  
+[💙Video in YOUTUBE👈](https://youtu.be/St2APOPmKsg)
 ### 설치 및 사용
 ```
 git clone 
